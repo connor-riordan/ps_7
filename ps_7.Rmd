@@ -20,6 +20,9 @@ library(purrr)
 library(tibble)
 library(stringr)
 library(forcats)
+library(tidyr)
+library(broom)
+library(gt)
 ```
 
 ## 1A
@@ -97,6 +100,29 @@ scatterplot <- g %>%
   ) + theme_classic()
 
 scatterplot
+
+```
+
+## 2A
+
+```{r, chunk_2A, echo = FALSE}
+g %>%
+  filter(party_code == 100) %>%
+  lm(formula = nominate_percentile ~ age, .) %>%
+  tidy(conf.int = TRUE) %>%
+  select(term, estimate, conf.low, conf.high) %>%
+  gt() %>%
+  tab_header(
+    title = "Effect of Age on DW Nominate Percentile",
+    subtitle = "Higher percentile suggests more conservative"
+  ) %>% cols_label(
+    term = "Varibale",
+    estimate = "Estimate",
+    conf.low = "Lower Bound",
+    conf.high = "Upper Bound"
+  )
+
+
 
 ```
 
