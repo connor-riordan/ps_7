@@ -16,6 +16,10 @@ library(dplyr)
 library(ggplot2)
 library(stringr)
 library(skimr)
+library(purrr)
+library(tibble)
+library(stringr)
+library(forcats)
 ```
 
 ## 1A
@@ -24,15 +28,17 @@ library(skimr)
 government <- read.csv("data_directory/HSall_members.csv") %>%
   clean_names()
 
-g1a <- government %>%
+g <- government %>%
+  filter(congress == 116) %>%
   filter(chamber == "Senate" | chamber == "House") %>%
   mutate(party = ifelse(party_code == 200, "Republican",
                         ifelse(party_code == 100, "Democrat", 
                                ifelse(party_code == 328, "Independent", "N/A")))) %>%
+  filter(!party == "Independent") %>%
   mutate(age = 2019-born) %>%
   mutate(nominate_percentile = percent_rank(nominate_dim1))
 
-g1a %>%
+g %>%
   skim(nominate_percentile, age) %>%
   print()
 
@@ -41,7 +47,7 @@ g1a %>%
 ## 1B
 
 ```{r, chunk_1B, echo = FALSE, message = FALSE}
-g1a %>%
+g %>%
   ggplot(aes(age)) + geom_histogram(bins = 30, color = "purple", fill = "dark grey") +
   theme_bw() + labs(
     title = "Distribution of Congressional Ages",
@@ -50,7 +56,7 @@ g1a %>%
   ) %>%
   print()
 
-g1a %>%
+g %>%
   ggplot(aes(nominate_percentile)) + geom_histogram(bins = 30, color = "blue", fill = "dark grey") +
   theme_bw() + labs(
     title = "Distribution of Nomination Percentiles",
@@ -58,6 +64,18 @@ g1a %>%
     y = "Count"
   ) %>%
   print()
+
+```
+
+## 1C
+
+```{r, chunk_1C, echo = FALSE}
+g %>%
+  summarize(correlation = cor(age, nominate_percentile)) %>%
+  print()
+
+# A negative coefficient would indicate that as age increases, the 
+
 
 
 
