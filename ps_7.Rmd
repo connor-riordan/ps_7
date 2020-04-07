@@ -37,3 +37,42 @@ g1a %>%
   print()
 
 ```
+
+## 1B
+
+```{r, chunk_1B, echo = FALSE, message = FALSE}
+g1a %>%
+  ggplot(aes(age)) + geom_histogram(bins = 30, color = "purple", fill = "dark grey") +
+  theme_bw() + labs(
+    title = "Distribution of Congressional Ages",
+    x = "Age",
+    y = "Count"
+  ) %>%
+  print()
+
+g1a %>%
+  ggplot(aes(nominate_percentile)) + geom_histogram(bins = 30, color = "blue", fill = "dark grey") +
+  theme_bw() + labs(
+    title = "Distribution of Nomination Percentiles",
+    x = "Nomination Percentile",
+    y = "Count"
+  ) %>%
+  print()
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
