@@ -7,5 +7,33 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(stringr)
+library(readr)
+library(janitor)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(stringr)
+library(skimr)
 ```
 
+## 1A
+
+```{r, chunk_1A, echo = FALSE}
+government <- read.csv("data_directory/HSall_members.csv") %>%
+  clean_names()
+
+g1a <- government %>%
+  filter(chamber == "Senate" | chamber == "House") %>%
+  mutate(party = ifelse(party_code == 200, "Republican",
+                        ifelse(party_code == 100, "Democrat", 
+                               ifelse(party_code == 328, "Independent", "N/A")))) %>%
+  mutate(age = 2019-born) %>%
+  mutate(nominate_percentile = percent_rank(nominate_dim1))
+
+g1a %>%
+  skim(nominate_percentile, age) %>%
+  print()
+
+```
