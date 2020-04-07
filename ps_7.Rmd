@@ -81,7 +81,24 @@ g %>%
 
 ```
 
+## 1D
 
+```{r, chunk_1D, echo = FALSE}
+
+scatterplot <- g %>%
+  ggplot(aes(age, nominate_percentile, color = party)) + geom_point() + 
+  geom_smooth(method = "glm", se = FALSE, color = "black") + geom_smooth(method = "glm", se = FALSE) + 
+  scale_color_manual(values = c("blue", "red")) + labs(
+    title = "Relationship Between Age and DW Nominate Percentile",
+    subtitle = "Higher scores represent more conservative positions",
+    x = "Age",
+    y = "Percentile Rank (DW Nominee)",
+    color = "Party"
+  ) + theme_classic()
+
+scatterplot
+
+```
 
 
 
