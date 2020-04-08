@@ -137,8 +137,7 @@ g %>%
 ```{r, chunk_Q3, echo = FALSE}
 
 democrat <- government %>%
-  mutate(year = 1787 + (congress*2)) %>%
-  mutate(age = year-born) %>%
+  mutate(age = (1787 + (congress*2))-born) %>%
   mutate(nominate_percentile = percent_rank(nominate_dim1)) %>%
   filter(party_code == 100) %>%
   filter(chamber == "Senate" | chamber == "House") %>%
@@ -147,9 +146,14 @@ democrat <- government %>%
 
 
 democrat <- democrat %>%
-  mutate(mod = map(data, ~ lm(nominate_percentile ~ age, data = .)))
+  mutate(mod = map(data, ~ lm(nominate_percentile ~ age, data = .)),
+         reg_results = map(mod, ~ tidy(.)),
+         coef = map_dbl(reg_results, ~ filter(., term == "age") %>% pull(estimate)),
+         se = map_dbl(reg_results, ~ filter(., term == "age") %>% pull(std.error)),
+         upper = coef + (1.96 * se),
+         lower = coef - (1.96 * se))
   
-
+glimpse(democrat)
 
 ```
 
