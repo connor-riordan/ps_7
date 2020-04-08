@@ -62,7 +62,7 @@ g %>%
 g %>%
   ggplot(aes(nominate_percentile)) + geom_histogram(bins = 30, color = "blue", fill = "dark grey") +
   theme_bw() + labs(
-    title = "Distribution of Nomination Percentiles",
+    title = "Distribution of DW Nomination Percentiles",
     x = "Nomination Percentile",
     y = "Count"
   ) %>%
@@ -126,11 +126,11 @@ g %>%
 
 ## 2B
 
-
+The estimated average treatment effect for this data is -0.3322965. What this means is that as age increases by one, the DW Nominate Percentile will go down by 0.3322965. We shouldn't necessarily think of this relationship as causal because there are a multitude of reasons why older democratic congressmen might be less conservative. One example could be that older democratic congressmen have witnessed republican and democratic administrations and have felt liberal ideas best suited the country, whereas new democrats have to appeal to more moderate voters. We calculated a confidence interval around the estimated average treatment so we can confidently say that the true value for how age affects the DW Nominate Percentile lies in between the upper and lower bounds.
 
 ## 2C
 
-
+The causal effect of x, or military treatment, on y, the DW nominate percentile, is the difference in the potential outcomes of y given different values of x. We can take the mean of all causal effects to find the estimated average treatment, which tells us that serving in the military will change a congressman's DW nominate percentile by (+ or -) that amount. While randomization offers a close approximation of the ATE, this isn't a causal relationship because we can only observe one potential outcome and can never know what it would be if the congressman received the other.
 
 ## 3
 
