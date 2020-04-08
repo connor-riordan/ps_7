@@ -122,10 +122,36 @@ g %>%
     conf.high = "Upper Bound"
   )
 
+```
+
+## 2B
+
+
+
+## 2C
+
+
+
+## 3
+
+```{r, chunk_Q3, echo = FALSE}
+
+democrat <- government %>%
+  mutate(year = 1787 + (congress*2)) %>%
+  mutate(age = year-born) %>%
+  mutate(nominate_percentile = percent_rank(nominate_dim1)) %>%
+  filter(party_code == 100) %>%
+  filter(chamber == "Senate" | chamber == "House") %>%
+  group_by(congress) %>%
+  nest()
+
+
+democrat <- democrat %>%
+  mutate(mod = map(data, ~ lm(nominate_percentile ~ age, data = .)))
+  
 
 
 ```
-
 
 
 
