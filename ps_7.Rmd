@@ -39,7 +39,7 @@ g <- government %>%
                                ifelse(party_code == 328, "Independent", "N/A")))) %>%
   filter(!party == "Independent") %>%
   mutate(age = 2019-born) %>%
-  mutate(nominate_percentile = percent_rank(nominate_dim1))
+  mutate(nominate_percentile = 100 *percent_rank(nominate_dim1))
 
 g %>%
   skim(nominate_percentile, age) %>%
@@ -138,12 +138,11 @@ g %>%
 
 democrat <- government %>%
   mutate(age = (1787 + (congress*2))-born) %>%
-  mutate(nominate_percentile = percent_rank(nominate_dim1)) %>%
   filter(party_code == 100) %>%
   filter(chamber == "Senate" | chamber == "House") %>%
+  mutate(nominate_percentile = 100 * percent_rank(nominate_dim1)) %>%
   group_by(congress) %>%
   nest()
-
 
 democrat <- democrat %>%
   mutate(mod = map(data, ~ lm(nominate_percentile ~ age, data = .)),
@@ -153,8 +152,18 @@ democrat <- democrat %>%
          upper = coef + (1.96 * se),
          lower = coef - (1.96 * se))
   
-glimpse(democrat)
-
+democrat %>%
+  ggplot(aes(x = congress, y = coef)) + geom_point(color = "blue") + 
+  geom_errorbar(aes(x = congress, ymin = lower, ymax = upper), color = "blue") +
+  theme_classic() + labs(
+    title = "Average Treatment Effect of Age on Conservativism
+    Among Democrats Over Time",
+    subtitle = "Scores use DW Nominate Dimension 1
+    95% Confidence Interval",
+    x = "Congress",
+    y = "Estimate"
+  )
+  
 ```
 
 
