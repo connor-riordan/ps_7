@@ -34,7 +34,7 @@ library(gt)
 government <- read.csv("data_directory/HSall_members.csv") %>%
   clean_names()
 
-# At first, I solved thi problem without filtering for congress == 116, and
+# At first, I solved this problem without filtering for congress == 116, and
 # I was so confused as to why some of my code later on wasn't working. However,
 # I eventually figured that out. For mutate, I thought a series of ifelse 
 # statements would be best for coming up with the different parties (when
@@ -60,22 +60,31 @@ g %>%
 ## 1B
 
 ```{r, chunk_1B, echo = FALSE, results = 'hide'}
+
+# I decided to make it so that I could examine both the entire distribution
+# for both parties for age, as well as setting fill to party so I could also
+# see how they each stack up against one another.
+
 g %>%
-  ggplot(aes(age)) + geom_histogram(bins = 30, color = "purple", fill = "dark grey") +
+  ggplot(aes(age, fill = party)) + geom_histogram(bins = 30, color = "black") +
   theme_bw() + labs(
     title = "Distribution of Congressional Ages",
     x = "Age",
     y = "Count"
-  ) %>%
+  ) + scale_fill_manual(values = c("blue", "red")) %>%
   print()
 
+# Much like the graph above, I thought it would be best to have a way to
+# examine the entire dataset and then see how it was divided by chamber, which
+# was very illuminating.
+
 g %>%
-  ggplot(aes(nominate_percentile)) + geom_histogram(bins = 30, color = "blue", fill = "dark grey") +
+  ggplot(aes(nominate_percentile, fill = chamber)) + geom_histogram(bins = 30, color = "black") +
   theme_bw() + labs(
     title = "Distribution of DW Nomination Percentiles",
     x = "Nomination Percentile",
     y = "Count"
-  ) %>%
+  ) + scale_fill_manual(values = c("sky blue", "pink")) %>%
   print()
 
 ```
@@ -83,11 +92,16 @@ g %>%
 ## 1C
 
 ```{r, chunk_1C, echo = FALSE}
+
+# For this problem, I just needed to use summarize and cor to find my desired
+# value.
+
 g %>%
   summarize(correlation = cor(age, nominate_percentile)) %>%
   print()
 
-# A negative coefficient would indicate that as age increases, the 
+# A negative coefficient would indicate that as age increases, the DW
+# Nomination Percentile decreases.
 
 
 
@@ -98,9 +112,17 @@ g %>%
 
 ```{r, chunk_1D, echo = FALSE, results = 'hide'}
 
+# When I originally made this plot, I couldn't figure out why my black
+# regression wasn't showing up on the graph. I was using two geom_smooth()
+# functions, which I thought was right, but apparently I was wrong. Except...
+# I wasn't. I just had the wrong code intside the smooth functions; I was
+# missing color = "black" in my first, and after fixing that I was able to
+# produce the plot below.
+
 scatterplot <- g %>%
   ggplot(aes(age, nominate_percentile, color = party)) + geom_point() + 
-  geom_smooth(method = "glm", se = FALSE, color = "black") + geom_smooth(method = "glm", se = FALSE) + 
+  geom_smooth(method = "glm", se = FALSE, color = "black") + 
+  geom_smooth(method = "glm", se = FALSE) + 
   scale_color_manual(values = c("blue", "red")) + labs(
     title = "Relationship Between Age and DW Nominate Percentile",
     subtitle = "Higher scores represent more conservative positions",
@@ -115,7 +137,15 @@ scatterplot
 
 ## 2A
 
-```{r, chunk_2A, echo = FALSE, results = 'hide'}
+```{r, chunk_2A, echo = FALSE, message = FALSE}
+
+# To solve this problem, I first filtered by democrats, and I pretty much
+# used the book to help me complete this problem. I knew I needed to do
+# nominate_percentile ~ age as well as tidy and select. Inside select I had
+# to add in term to what was already stated in the book. After that...
+# my old friend gt()! How I missed him.  It was simple and fun to figure out 
+# all the labelling for the table.
+
 g %>%
   filter(party_code == 100) %>%
   lm(formula = nominate_percentile ~ age, .) %>%
@@ -130,7 +160,8 @@ g %>%
     estimate = "Estimate",
     conf.low = "Lower Bound",
     conf.high = "Upper Bound"
-  )
+  ) %>%
+  print()
 
 ```
 
@@ -145,6 +176,20 @@ The causal effect of x, or military treatment, on y, the DW nominate percentile,
 ## 3
 
 ```{r, chunk_Q3, echo = FALSE, results = 'hide'}
+
+# For this first chunk of code, I was in Emily's study hall for well past when
+# it ended because I didn't have the correct values on the y-axis. We both
+# couldn't figure out why for the longest time - all of my code was correct
+# (or so we thought). What ended up being the case was my mutate for
+# nominate_percentile was two rows of code above where it should have been, and
+# I hadn't filtered for the correct data before it ran. After we fixed that,
+# the plot came out exactly as we needed it to. I had originally created a
+# year column in order to solve for age, but then I realized I didn't need to
+# and could just put the whole equation right into the mutate. The second piece
+# of code followed exactly what the textbook told us to do, and I knew for
+# upper and lower I needed to use 1.96 for the 95% confidence interval. The
+# final piece - ggplot - was very easy, and I am just so relieved I have the
+# right values on the y-axis now.
 
 democrat <- government %>%
   mutate(age = (1787 + (congress*2))-born) %>%
