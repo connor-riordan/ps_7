@@ -137,14 +137,14 @@ scatterplot
 
 ## 2A
 
-```{r, chunk_2A, echo = FALSE, message = FALSE}
+```{r, chunk_2A, echo = FALSE}
 
 # To solve this problem, I first filtered by democrats, and I pretty much
 # used the book to help me complete this problem. I knew I needed to do
 # nominate_percentile ~ age as well as tidy and select. Inside select I had
 # to add in term to what was already stated in the book. After that...
 # my old friend gt()! How I missed him.  It was simple and fun to figure out 
-# all the labelling for the table.
+# all the labeling for the table.
 
 g %>%
   filter(party_code == 100) %>%
@@ -155,13 +155,13 @@ g %>%
   tab_header(
     title = "Effect of Age on DW Nominate Percentile",
     subtitle = "Higher percentile suggests more conservative"
-  ) %>% cols_label(
+  ) %>% 
+  cols_label(
     term = "Varibale",
     estimate = "Estimate",
     conf.low = "Lower Bound",
     conf.high = "Upper Bound"
-  ) %>%
-  print()
+  )
 
 ```
 
