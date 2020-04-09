@@ -28,8 +28,18 @@ library(gt)
 ## 1A
 
 ```{r, chunk_1A, echo = FALSE}
+
+# I read in the csv so I would have my dataset!
+
 government <- read.csv("data_directory/HSall_members.csv") %>%
   clean_names()
+
+# At first, I solved thi problem without filtering for congress == 116, and
+# I was so confused as to why some of my code later on wasn't working. However,
+# I eventually figured that out. For mutate, I thought a series of ifelse 
+# statements would be best for coming up with the different parties (when
+# applicable). Then, it was easy to use age, and skimming and printing was
+# very intuitive.
 
 g <- government %>%
   filter(congress == 116) %>%
@@ -49,7 +59,7 @@ g %>%
 
 ## 1B
 
-```{r, chunk_1B, echo = FALSE, message = FALSE}
+```{r, chunk_1B, echo = FALSE, results = 'hide'}
 g %>%
   ggplot(aes(age)) + geom_histogram(bins = 30, color = "purple", fill = "dark grey") +
   theme_bw() + labs(
@@ -86,7 +96,7 @@ g %>%
 
 ## 1D
 
-```{r, chunk_1D, echo = FALSE}
+```{r, chunk_1D, echo = FALSE, results = 'hide'}
 
 scatterplot <- g %>%
   ggplot(aes(age, nominate_percentile, color = party)) + geom_point() + 
@@ -105,7 +115,7 @@ scatterplot
 
 ## 2A
 
-```{r, chunk_2A, echo = FALSE}
+```{r, chunk_2A, echo = FALSE, results = 'hide'}
 g %>%
   filter(party_code == 100) %>%
   lm(formula = nominate_percentile ~ age, .) %>%
@@ -134,7 +144,7 @@ The causal effect of x, or military treatment, on y, the DW nominate percentile,
 
 ## 3
 
-```{r, chunk_Q3, echo = FALSE}
+```{r, chunk_Q3, echo = FALSE, results = 'hide'}
 
 democrat <- government %>%
   mutate(age = (1787 + (congress*2))-born) %>%
